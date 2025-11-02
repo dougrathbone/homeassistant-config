@@ -1,0 +1,531 @@
+title: Home
+views:
+  - path: default_view
+    title: Home
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: custom:mini-graph-card
+            name: Temp inside
+            legend: true
+            entities:
+              - entity: sensor.indoor_temperature
+                name: DownStairs
+                color: blue
+              - entity: sensor.office_temperature
+                name: Upstairs
+                color: orange
+              - entity: sensor.outdoor_temperature
+                name: Outside
+                color: lightblue
+          - type: custom:mini-graph-card
+            name: Air Quality
+            entities:
+              - sensor.purpleair_aqi_a
+            show:
+              labels: true
+            color_thresholds:
+              - value: 150
+                color: red
+              - value: 100
+                color: orange
+              - value: 40
+                color: green
+      - type: vertical-stack
+        cards:
+          - type: picture-glance
+            title: Front Door Intercom Lock
+            camera_image: camera.front_door_low
+            camera_view: live
+            entities:
+              - entity: switch.front_door_lock_switch
+                icon: mdi:lock
+            entity: switch.front_door_lock_switch
+            state_filter:
+              'on': brightness(100%) saturate(3)
+              'off': brightness(100%)
+            style: |
+              height:100px
+          - type: horizontal-stack
+            cards:
+              - type: custom:bubble-card
+                card_type: button
+                entity: sensor.indoor_temperature
+                icon: mdi:thermometer
+                button_type: state
+                name: Indoors
+                styles: |
+                  .bubble-button-background {
+                    background-color: #607D8B !important;
+                  }
+                  .bubble-icon-background {
+                    background: transparent !important;
+                    box-shadow: none !important;
+                  }
+                  .bubble-icon {
+                    color: #424242 !important;
+                  }
+              - type: custom:bubble-card
+                card_type: button
+                entity: sensor.outdoor_temperature
+                icon: mdi:thermometer-lines
+                button_type: state
+                name: Outdoors
+                styles: |
+                  .bubble-button-background {
+                    background-color: #607D8B !important;
+                  }
+                  .bubble-icon-background {
+                    background: transparent !important;
+                    box-shadow: none !important;
+                  }
+                  .bubble-icon {
+                    color: #424242 !important;
+                  }
+              - type: custom:bubble-card
+                card_type: button
+                entity: sensor.humidity
+                icon: mdi:water-percent
+                button_type: state
+                styles: |
+                  .bubble-button-background {
+                    background-color: #607D8B !important;
+                  }
+                  .bubble-icon-background {
+                    background: transparent !important;
+                    box-shadow: none !important;
+                  }
+                  .bubble-icon {
+                    color: #424242 !important;
+                  }
+          - type: horizontal-stack
+            cards:
+              - type: custom:bubble-card
+                card_type: button
+                entity: sensor.wind_speed
+                icon: mdi:weather-windy
+                button_type: state
+                styles: |
+                  .bubble-button-background {
+                    background-color: #607D8B !important;
+                  }
+                  .bubble-icon-background {
+                    background: transparent !important;
+                    box-shadow: none !important;
+                  }
+                  .bubble-icon {
+                    color: #424242 !important;
+                  }
+              - type: custom:bubble-card
+                card_type: button
+                entity: sensor.daily_rain_rate
+                icon: mdi:weather-pouring
+                button_type: state
+                name: Rain Today
+                styles: |
+                  .bubble-button-background {
+                    background-color: ${parseFloat(state) > 0 ? '#D32F2F' : '#4CAF50'} !important;
+                  }
+                  .bubble-icon-background {
+                    background: transparent !important;
+                    box-shadow: none !important;
+                  }
+                  .bubble-icon {
+                    color: #424242 !important;
+                  }
+          - type: horizontal-stack
+            cards:
+              - type: custom:bubble-card
+                card_type: button
+                entity: cover.ratgdov25i_4affeb_door
+                icon: mdi:garage
+                name: Garage
+                show_last_changed: false
+                show_state: true
+                card_layout: normal
+                styles: |
+                  .bubble-button-background {
+                    background-color: ${state === 'closed' ? '#4CAF50' : '#D32F2F'} !important;
+                    opacity: 1 !important;
+                  }
+                  .bubble-icon-background {
+                    box-shadow: none !important;
+                  }
+                  .bubble-icon {
+                    color: #424242 !important;
+                  }
+              - type: custom:bubble-card
+                card_type: button
+                entity: lock.laundry_door_lock
+                icon: mdi:lock
+                name: Laundry
+                show_state: true
+                styles: |
+                  .bubble-button-background {
+                    background-color: ${state === 'locked' ? '#4CAF50' : '#D32F2F'} !important;
+                  }
+                  .bubble-icon-background {
+                    box-shadow: none !important;
+                  }
+                  .bubble-icon {
+                    color: #424242 !important;
+                  }
+              - type: custom:bubble-card
+                card_type: button
+                entity: lock.garage_side_door_lock
+                icon: mdi:lock
+                name: Garage Side
+                show_state: true
+                button_action:
+                  tap_action:
+                    action: toggle
+                card_layout: normal
+                styles: |
+                  .bubble-button-background {
+                    background-color: ${state === 'locked' ? '#4CAF50' : '#D32F2F'} !important;
+                  }
+                  .bubble-icon-background {
+                    box-shadow: none !important;
+                  }
+                  .bubble-icon {
+                    color: #424242 !important;
+                  }
+      - type: vertical-stack
+        cards:
+          - type: custom:mini-graph-card
+            name: House Energy Usage
+            entities:
+              - entity: sensor.energy_current_hour
+                name: Production (kW)
+                color: green
+              - entity: sensor.home_energy_gateway_charge
+                name: Battery Storage (%)
+                color: salmon
+                y_axis: secondary
+            show:
+              labels: true
+              labels_secondary: true
+          - type: vertical-stack
+            cards:
+              - type: horizontal-stack
+                cards:
+                  - type: gauge
+                    entity: sensor.home_energy_gateway_charge
+                    name: Battery
+                    min: 10
+                    max: 100
+                  - type: custom:mini-graph-card
+                    entities:
+                      - entity: sensor.amber_electric_general_price
+                        name: Energy Price
+                      - entity: sensor.amber_electric_feed_in_price
+                        name: Feed-in Price
+                    title: Energy Pricing
+                    hours_to_show: 24
+          - type: horizontal-stack
+            cards:
+              - type: custom:mini-graph-card
+                name: Solar Generation
+                entities:
+                  - entity: sensor.home_energy_gateway_solar_power
+                    name: Generation
+              - type: custom:mini-graph-card
+                name: Energy Usage
+                entities:
+                  - entity: sensor.home_energy_gateway_load_power
+                    name: Battery
+  - theme: Backend-selected
+    title: Lights
+    path: lights
+    icon: mdi:lightbulb
+    badges: []
+    cards:
+      - type: entities
+        entities:
+          - entity: light.kitchen_lights
+          - entity: light.dining_room_lights
+          - entity: light.family_room_lights
+          - entity: light.entryway_lights
+          - entity: light.hallwaylights
+          - entity: light.ledpanellight
+            name: Hallway Column
+          - entity: light.livingroombalconydownlights
+            name: Living Room Balcony
+          - entity: light.livingroombalconywalllights
+            name: Living Room Balcony Low
+          - entity: light.familyroombalconydownlights
+          - entity: light.kitchenpantry
+          - entity: light.living_room_lamp_large_switch
+          - entity: light.living_room_lamp_small_switch
+        title: Lights
+  - theme: Backend-selected
+    title: Airconditioning
+    path: airconditioning
+    icon: mdi:air-conditioner
+    badges: []
+    cards:
+      - graph: line
+        hours_to_show: 24
+        type: sensor
+        entity: sensor.indoor_temperature
+        detail: 1
+        name: Downstairs
+      - type: custom:simple-thermostat
+        entity: climate.l1_101
+        header:
+          name: Kitchen
+        style: |
+          ha-card {
+          st-font-size-xl: 24px;
+          st-font-size-m: 20px;
+          st-font-size-title: 20px;
+          st-font-size-sensors: 30px;
+          st-spacing: 2px;
+          height: 100px;
+          }
+        layout:
+          step: row
+          mode:
+            names: false
+            icons: true
+            headings: false
+      - type: custom:simple-thermostat
+        entity: climate.l1_100
+        header:
+          name: Lounge Room
+        layout:
+          step: row
+          mode:
+            names: false
+            headings: false
+      - type: custom:simple-thermostat
+        entity: climate.l1_102
+        header:
+          name: Family Room
+        layout:
+          step: row
+          mode:
+            names: false
+            headings: false
+      - type: entities
+        entities:
+          - entity: switch.lounge_room_heater
+            icon: mdi:fire
+          - entity: switch.family_room_heater
+            icon: mdi:fire
+          - entity: automation.heating_control_for_ir_controlled_heater
+            name: Lounge Room Heating Automation
+            icon: mdi:hvac
+          - entity: automation.heating_control_for_ir_controlled_heater_family_room
+            name: Family Room Heating Automation
+            icon: mdi:hvac
+          - entity: light.mainbathroomfloorheating
+          - entity: light.mainbedroomfloorheating
+          - entity: automation.main_bathroom_floor_heating_morning
+            name: Main bathroom Floor Heating Automation
+            icon: mdi:hvac
+          - entity: automation.new_automation
+            icon: mdi:hvac
+        title: Heating
+      - graph: line
+        hours_to_show: 24
+        type: sensor
+        entity: sensor.office_temperature
+        detail: 1
+        name: Upstairs
+      - type: custom:simple-thermostat
+        entity: climate.l1_105
+        header:
+          name: Office
+        layout:
+          step: row
+          mode:
+            names: false
+            headings: false
+      - type: custom:simple-thermostat
+        entity: climate.l1_106
+        header:
+          name: Master Bedroom
+        layout:
+          step: row
+          mode:
+            names: false
+            headings: false
+      - type: custom:simple-thermostat
+        entity: climate.l1_104
+        header:
+          name: Spare Bedroom
+        layout:
+          step: row
+          mode:
+            names: false
+            headings: false
+      - type: custom:simple-thermostat
+        entity: climate.l1_103
+        header:
+          name: Wills Bedroom
+        layout:
+          step: row
+          mode:
+            names: false
+            headings: false
+  - theme: Backend-selected
+    title: Garden
+    path: garden
+    icon: mdi:flower
+    badges: []
+    views: null
+    cards:
+      - type: entities
+        entities:
+          - entity: light.gardenlightsfront
+            name: Front Yard
+            icon: mdi:light-flood-up
+          - entity: light.underdecklights
+            icon: mdi:ceiling-light-multiple
+            name: Under Deck
+          - entity: switch.pondpump
+            icon: mdi:fountain
+          - entity: light.carportlights
+            name: Carport Lights
+            icon: mdi:car
+          - entity: light.gardenlightsfrontwall
+            name: Front door wall
+            icon: mdi:lightbulb-group
+          - entity: light.gardenlightsentranceawning
+            name: Front door awning
+            icon: mdi:outdoor-lamp
+          - entity: light.gardenlightslaundryawning
+            icon: mdi:iron-board
+            name: Laundry back awning
+          - entity: light.gardenlightsback
+            icon: mdi:light-flood-down
+            name: Backyard
+          - entity: switch.backyard_fountain
+          - entity: switch.backyard_lights
+          - entity: switch.front_hedge_sprinkler_switch
+          - entity: switch.front_garden_drip_sprinkler_switch
+          - entity: switch.front_lawn_sprinkler_switch
+      - type: vertical-stack
+        cards:
+          - type: horizontal-stack
+            cards:
+              - graph: line
+                type: sensor
+                entity: sensor.front_lawn_under_house_soil_meter_soil_moisture
+                detail: 1
+                name: 'Under Balcony Lawn Moisture '
+              - graph: line
+                type: sensor
+                entity: sensor.balcony_plant_soil_moisture
+                detail: 1
+                name: Balcony Plant Moisture
+          - type: horizontal-stack
+            cards:
+              - graph: line
+                type: sensor
+                entity: sensor.front_lawn_soil_meter_left_soil_moisture
+                detail: 1
+                name: Front Lawn Moisture Left
+              - graph: line
+                type: sensor
+                entity: sensor.front_lawn_soil_meter_right_soil_moisture
+                detail: 1
+                name: Front Lawn Moisture Right
+          - type: custom:mini-graph-card
+            name: Watering Last 7 Days
+            icon: mdi:sprinkler-variant
+            entities:
+              - entity: binary_sensor.irrigation_unlimited_c1_z1
+                attribute: today_total
+                color: '#00E3CC'
+              - entity: binary_sensor.irrigation_unlimited_c1_z2
+                attribute: today_total
+                color: '#32A89C'
+              - entity: binary_sensor.irrigation_unlimited_c1_z3
+                attribute: today_total
+                color: '#00635A'
+            show:
+              graph: bar
+              labels: true
+            unit: min
+            aggregate_func: max
+            hours_to_show: 168
+            group_by: date
+            lower_bound: 0
+          - type: custom:irrigation-unlimited-card
+            always_show_zones: true
+            always_show_sequences: false
+      - type: picture-elements
+        elements:
+          - type: state-badge
+            entity: sensor.front_lawn_under_house_soil_meter_soil_moisture
+            style:
+              top: 75%
+              left: 85%
+            title: null
+          - type: state-badge
+            entity: sensor.front_lawn_soil_meter_left_soil_moisture
+            style:
+              top: 93%
+              left: 87%
+          - type: state-badge
+            entity: sensor.front_lawn_soil_meter_right_soil_moisture
+            style:
+              top: 88%
+              left: 56%
+            title: null
+          - type: state-badge
+            entity: sensor.front_walkway_plant_moisture_sensor_soil_moisture
+            style:
+              top: 70%
+              left: 45%
+            title: ''
+        image: https://i.ibb.co/hYD9TT5/Lawns.jpg
+  - theme: Backend-selected
+    title: Blinds
+    path: blinds
+    icon: mdi:blinds
+    badges: []
+    cards:
+      - type: entities
+        entities:
+          - entity: cover.loungeroomsouthblind
+            name: Loungeroom South Blinds
+          - entity: cover.loungeroomnorthblind
+            name: Lounge Room North Windows
+          - entity: cover.loungeroomdoorblind
+            name: Lounge Room Door
+          - entity: cover.loungeroomdoorwindowblind
+            name: Lounge Room Door
+          - entity: cover.familyroomwindowblind
+            name: Family Room Window
+          - entity: cover.familyroomdoorblind
+            name: Family Room Door
+        title: Blinds
+  - theme: Backend-selected
+    title: Bathroom
+    path: bathroom
+    icon: mdi:bathtub
+    badges: []
+    cards:
+      - type: entities
+        entities:
+          - entity: light.mainbathroomvanity
+            name: Toilet Vanity
+            icon: mdi:countertop
+          - entity: light.mainbathroomtoilet
+            name: Toilet cubicle
+            icon: mdi:toilet
+          - entity: light.mainbathroomdownlights
+            name: Bathroom Heat lights
+            icon: mdi:lightbulb-group
+          - entity: light.mainbathroomshower
+            name: Bathroom Shower
+            icon: mdi:shower-head
+          - entity: light.mainbathroomexhaustfan
+            name: Bathroom Exhaust Fan
+            icon: mdi:fan
+          - entity: light.mainbathroomfloorheating
+            icon: mdi:thermometer-lines
+          - entity: light.mainbathroomtowelrail

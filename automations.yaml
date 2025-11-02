@@ -1,0 +1,558 @@
+- id: shellies_announce
+  alias: Shellies Announce
+  trigger:
+  - platform: homeassistant
+    event: start
+  - platform: time_pattern
+    hours: /1
+  action:
+    service: mqtt.publish
+    data:
+      topic: shellies/command
+      payload: announce
+- id: '1623849259212'
+  alias: Turn off air conditioning at night
+  description: ''
+  trigger:
+  - platform: time
+    at: '22:00:00'
+  condition: []
+  action:
+  - device_id: 07c92de219755a5b48f38d41fc6ec29f
+    domain: climate
+    entity_id: climate.l1_100
+    type: set_hvac_mode
+    hvac_mode: 'off'
+  - device_id: a39c574a832f8a7cdf9bcb66b9ca9483
+    domain: climate
+    entity_id: climate.l1_101
+    type: set_hvac_mode
+    hvac_mode: 'off'
+  - device_id: dcf848493a352c0d9150aeb898a2ed7f
+    domain: climate
+    entity_id: climate.l1_102
+    type: set_hvac_mode
+    hvac_mode: 'off'
+  - device_id: 19d95fe7bade1d8b55962c9114b7a499
+    domain: climate
+    entity_id: climate.l1_103
+    type: set_hvac_mode
+    hvac_mode: 'off'
+  - device_id: ed136b1f0737cd7c52768d260e4ee096
+    domain: climate
+    entity_id: climate.l1_104
+    type: set_hvac_mode
+    hvac_mode: 'off'
+  - device_id: 7ca29c9e7bdce295ef8082a6f6cc2195
+    domain: climate
+    entity_id: climate.l1_105
+    type: set_hvac_mode
+    hvac_mode: 'off'
+  - device_id: 2fc605907bbee2bb7e7c579b9472f1d3
+    domain: climate
+    entity_id: climate.l1_106
+    type: set_hvac_mode
+    hvac_mode: 'off'
+  mode: single
+- id: '1628242409472'
+  alias: 'Automation: 11pm Turn off outside lights'
+  description: ''
+  triggers:
+  - at: '23:00:00'
+    trigger: time
+  conditions: []
+  actions:
+  - action: scene.turn_on
+    target:
+      entity_id: scene.turn_off_garden_lights
+    data: {}
+  mode: single
+- id: '1628398006401'
+  alias: Turn on pond pump
+  description: ''
+  trigger:
+  - platform: time
+    at: 07:00:00
+  condition: []
+  action:
+  - scene: scene.turn_on_pond_pum
+  mode: single
+- id: '1628398047220'
+  alias: Turn off pond pump
+  description: ''
+  trigger:
+  - platform: time
+    at: '21:00'
+  condition: []
+  action:
+  - scene: scene.turn_off_pond_pump
+  mode: single
+- id: '1628509387375'
+  alias: Sunset Blinds Close
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunset
+  condition: []
+  action:
+  - scene: scene.close_downstairs_blinds
+  mode: single
+- id: '1628509707196'
+  alias: Sunrise Blinds Open
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunrise
+  condition: []
+  action:
+  - scene: scene.open_blinds_downstairs
+  mode: single
+- id: '1647332309048'
+  alias: 'Sunset: Turn on Lights'
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunset
+    offset: -01:00:00
+  condition: []
+  action:
+  - type: turn_on
+    device_id: f6f0c5dd9dace327b0253f20334e2505
+    entity_id: f664827ff378d1e63d4ab602199a9d22
+    domain: light
+  - type: turn_on
+    device_id: fbcdd0c7bbdb122c02dd4e82831fcd68
+    entity_id: d824a52afde257289d4c24f7b4ec4872
+    domain: light
+  - type: turn_on
+    device_id: aaba616811b94ca8077a8487410c6a8d
+    entity_id: 3c703621e346ffc836853ba1697485e1
+    domain: light
+  - type: turn_on
+    device_id: 6cc2817cf1fa28456a60f155697d58a4
+    entity_id: 89b116188db49827ac650829f9232442
+    domain: light
+  - service: scene.turn_on
+    target:
+      entity_id: scene.turn_on_outside_lights
+    metadata: {}
+  mode: single
+- id: '1655897560681'
+  alias: Heating Control for IR Controlled Heater (Lounge room)
+  description: ''
+  use_blueprint:
+    path: dougrathbone/heating.yaml
+    input:
+      heating: switch.lounge_room_heater
+      temp_sensor: sensor.loungeroomtemp_temperature
+      person1: person.doug_rathbone
+      person2: person.rachelle
+      min_temp: 20
+      set_temp: 25
+      time_after: 06:00:00
+      time_before: '22:00:00'
+- id: '1655985498563'
+  alias: Heating Control for IR Controlled Heater (Family room)
+  description: ''
+  use_blueprint:
+    path: dougrathbone/heating.yaml
+    input:
+      heating: switch.family_room_heater
+      temp_sensor: sensor.family_room_ir_temperature
+      person1: person.doug_rathbone
+      person2: person.rachelle
+      min_temp: 21
+      set_temp: 24
+      time_after: 06:00:00
+      time_before: '22:00:00'
+- id: '1656408018461'
+  alias: Main bedroom floor heating (morning)
+  description: ''
+  use_blueprint:
+    path: dougrathbone/floor-heating-timer.yaml
+    input:
+      heating: light.mainbedroomfloorheating
+      temp_sensor: sensor.mainbedroom_temperature
+      person1: person.doug_rathbone
+      person2: person.rachelle
+      min_temp: 23
+      time_after: 04:00:00
+      time_before: 09:30:00
+- id: '1658055567621'
+  alias: Timed Towel Rail (Main Bedroom)
+  description: ''
+  use_blueprint:
+    path: dougrathbone/switch-timer-blueprint.yaml
+    input:
+      switch_device: light.mainbedroomtowelrail
+      time_after: 04:30:00
+      time_before: 08:30:00
+- id: '1658055637609'
+  alias: Timed Towel Rail (Main Bathroom)
+  description: ''
+  use_blueprint:
+    path: dougrathbone/switch-timer-blueprint.yaml
+    input:
+      switch_device: light.mainbathroomtowelrail
+      time_after: '16:30:00'
+      time_before: '20:30:00'
+- id: '1663282479552'
+  alias: Execute End of Night
+  description: ''
+  trigger:
+  - platform: time
+    at: 00:00:00
+  condition: []
+  action:
+  - service: scene.turn_on
+    target:
+      entity_id: scene.houseendofnight
+    metadata: {}
+  mode: single
+- id: '1663886016580'
+  alias: Morning Open Main Bedroom Blinds
+  description: ''
+  trigger:
+  - platform: time
+    at: '10:00:00'
+  condition: []
+  action:
+  - device_id: 26dcab3aaaac864543f9e7cccbb939cf
+    domain: cover
+    entity_id: cover.mainbednorthblinds
+    type: open
+  - device_id: 24e8448fd17d9178f8fbaf6c426b8c55
+    domain: cover
+    entity_id: cover.mainbedbaywindowblind
+    type: open
+  - device_id: 373ffc804fdbc631c99542e472e9cc4d
+    domain: cover
+    entity_id: cover.mainbedsouthblinds
+    type: open
+  mode: single
+- id: '1671706587358'
+  alias: 'Notification: Door Opened'
+  description: Notifies mobile devices that are not home when an entry is opened.
+  triggers:
+  - type: opened
+    device_id: 92245ad9875a9b18f6e2bb72d12c9906
+    entity_id: binary_sensor.family_room_sliding_door_window_door_is_open
+    domain: binary_sensor
+    trigger: device
+  - type: opened
+    device_id: 3dbf10023bb0f009707eb47fcadab54b
+    entity_id: d004d97d87cacd1db6a18cc25abc06d4
+    domain: binary_sensor
+    trigger: device
+  - type: unlocked
+    device_id: 756d3dbf03616316488db887521b5485
+    entity_id: b2dd274e0f73caf9767fc6a631b0a0f1
+    domain: lock
+    trigger: device
+  - type: unlocked
+    device_id: 835ceb47acdbc189f3757c5a20792ec3
+    entity_id: lock.garage_side_door_lock
+    domain: lock
+    trigger: device
+  - entity_id:
+    - switch.front_door_lock_switch
+    from: 'off'
+    to: 'on'
+    trigger: state
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: device_tracker.rachellesphone_2
+        state: not_home
+      sequence:
+      - data:
+          title: "\U0001F6AA Entry Alert"
+          message: The {{ state_attr(trigger.entity_id, 'friendly_name') }} was {%
+            if 'lock' in trigger.entity_id or 'switch' in trigger.entity_id %}unlocked{%
+            else %}opened{% endif %}.
+          data:
+            clickAction: /lovelace-cameras/default_view
+        action: notify.mobile_app_rachellesphone
+    - conditions:
+      - condition: state
+        entity_id: device_tracker.iphone_d_2
+        state: not_home
+      sequence:
+      - data:
+          title: "\U0001F6AA Entry Alert"
+          message: The {{ state_attr(trigger.entity_id, 'friendly_name') }} was {%
+            if 'lock' in trigger.entity_id or 'switch' in trigger.entity_id %}unlocked{%
+            else %}opened{% endif %}.
+          data:
+            clickAction: /lovelace-cameras/default_view
+        action: notify.mobile_app_dougs_phone
+  mode: restart
+- id: '1673173021056'
+  alias: 'Notification: Device Battery Low'
+  description: 'Notification: Device Battery Low'
+  triggers:
+  - type: bat_low
+    device_id: 3348846874618c00821b8c54c06e164f
+    entity_id: binary_sensor.wh65_battery
+    domain: binary_sensor
+    trigger: device
+  - type: bat_low
+    device_id: 92245ad9875a9b18f6e2bb72d12c9906
+    entity_id: binary_sensor.family_room_sliding_door_low_battery_level
+    domain: binary_sensor
+    trigger: device
+  - type: bat_low
+    device_id: 5a1baa198082309c39be53c9c7e02c2c
+    entity_id: binary_sensor.kitchen_sliding_door_low_battery_level
+    domain: binary_sensor
+    trigger: device
+  - type: bat_low
+    device_id: 76e7526cb2e5bd20accb24c18d39e24b
+    entity_id: binary_sensor.garage_side_door_sensor_low_battery_level
+    domain: binary_sensor
+    trigger: device
+  - type: bat_low
+    device_id: 69b83c72e61ba608037978c48b99b473
+    entity_id: binary_sensor.laundry_door_sensor_low_battery_level
+    domain: binary_sensor
+    trigger: device
+  - type: battery_level
+    device_id: 0a77936d5d9acbbad83888d3c6f2165b
+    entity_id: 0e16deb5ab35c36355b6bc12628d91ba
+    domain: sensor
+    below: 20
+    trigger: device
+    for:
+      hours: 1
+      minutes: 0
+      seconds: 0
+  - type: battery_level
+    device_id: 434205c4ef424ff528fe1b691d55ac04
+    entity_id: 3342d113a3af59d9100ec53041565802
+    domain: sensor
+    below: 20
+    trigger: device
+  - type: battery_level
+    device_id: 98b39a4b90a9f6098ed624e7cc378c82
+    entity_id: be5e393d1cc242a0e77f4db932c8e45b
+    domain: sensor
+    below: 20
+    trigger: device
+  - type: battery_level
+    device_id: faf539c783ca3733a71ea7ee53d299d1
+    entity_id: 29240bc7233f479142b90ead0273bfbe
+    domain: sensor
+    below: 20
+    trigger: device
+  - type: battery_level
+    device_id: 78c6d7618827ed365d7ecab4c9ceeb2b
+    entity_id: 189c523783ce21650d0b59faa878dea7
+    domain: sensor
+    below: 20
+    trigger: device
+  - type: battery_level
+    device_id: d0dc24b8bebf5751a0132643225b6801
+    entity_id: ab80c7fb387fdfce10174a8371f96b55
+    domain: sensor
+    below: 20
+    trigger: device
+  - type: battery_level
+    device_id: 4e0e3d31f16344f3557c6441269e84d2
+    entity_id: 4dc4b75bf7b412566fbfe03c95616f29
+    domain: sensor
+    below: 20
+    trigger: device
+  - type: battery_level
+    device_id: 756d3dbf03616316488db887521b5485
+    entity_id: 21d166bde699f26d9e913a09c5652f5e
+    domain: sensor
+    below: 20
+    trigger: device
+  - type: battery_level
+    device_id: 835ceb47acdbc189f3757c5a20792ec3
+    entity_id: 4ffeaf2361b4dfd39635595fb9c571e1
+    domain: sensor
+    below: 20
+    trigger: device
+  - type: battery_level
+    device_id: 21e243b9e4210324489fb0ebe39fbfa2
+    entity_id: 029a2f4d570514767e28a58fe4de5f7a
+    domain: sensor
+    trigger: device
+    below: 35
+    for:
+      hours: 1
+      minutes: 0
+      seconds: 0
+  conditions: []
+  actions:
+  - data:
+      title: Battery Low
+      message: '{{ trigger.to_state.name }} needs its batteries changed'
+      clickAction: /lovelace/batteries?entityId={{ trigger.entity_id }}
+      tag: battery-low-{{ trigger.entity_id }}
+    action: notify.notify
+  mode: parallel
+  max: 10
+- id: '1680696433672'
+  alias: Main bathroom floor heating (morning)
+  description: ''
+  use_blueprint:
+    path: dougrathbone/floor-heating-timer.yaml
+    input:
+      heating: light.mainbathroomfloorheating
+      person1: person.doug_rathbone
+      person2: person.rachelle
+      min_temp: 24
+      time_after: 04:00:00
+      time_before: '10:30:00'
+      temp_sensor: sensor.willsroom_temperature
+- id: '1697106233494'
+  alias: Link Backyard Lights
+  description: ''
+  use_blueprint:
+    path: link_multiple_devices.yaml
+    input:
+      linked_entities:
+      - switch.backyard_lights
+      - light.backyard_lights
+- id: '1703814566887'
+  alias: 'Notification: Plant watering'
+  description: 'Notification: Plant moisure below 60%'
+  triggers:
+  - type: humidity
+    device_id: 434205c4ef424ff528fe1b691d55ac04
+    entity_id: 73090799fd77ce8709b0d90c045d61e3
+    domain: sensor
+    below: 55
+    trigger: device
+  - type: humidity
+    device_id: 98b39a4b90a9f6098ed624e7cc378c82
+    entity_id: 1e5f1efaf69aa415428430e83f45f7e9
+    domain: sensor
+    below: 55
+    trigger: device
+  conditions: []
+  actions:
+  - data:
+      title: Watering needed
+      message: '{{ trigger.to_state.name }} needs water. Moisture is currently {{
+        trigger.to_state.state }}%.
+
+        '
+    action: notify.notify
+  - metadata: {}
+    data:
+      title: Watering needed
+      message: ' {{ trigger.to_state.name }} needs water. Moisture is currently {{
+        trigger.to_state.state }}%.'
+    action: notify.persistent_notification
+  mode: restart
+- id: '1711955478008'
+  alias: Main Bedroom NSPanel configuration
+  description: ''
+  use_blueprint:
+    path: dougrathbone/nspanel_blueprint.yaml
+    input:
+      nspanel_name: 23812f5373a8d176719651400dc3c1d3
+      weather_entity: weather.home
+      outdoortemp: sensor.outdoor_temperature
+      indoortemp: sensor.indoor_temperature
+      home_value01: sensor.amber_electric_general_price
+      home_value01_icon: mdi:transmission-tower
+      home_value02: sensor.amber_electric_feed_in_price
+      home_value02_icon: mdi:solar-power
+      home_custom_button01: switch.front_door_lock_switch
+      home_custom_button01_icon: mdi:door-closed-lock
+      home_custom_button02: cover.main_bedroom_blinds
+      climate: climate.l1_106
+      home_custom_button02_icon: mdi:blinds
+      climate_chip_always_visible: true
+- id: '1729566334495'
+  alias: 'Timed: Ensure ZWave Extenders are turned on'
+  description: ''
+  triggers:
+  - trigger: time_pattern
+    minutes: '30'
+  conditions: []
+  actions:
+  - device_id: 1a8ffbbc2bf9dde26155591848160379
+    domain: button
+    entity_id: 8623827ccab94f3869cb49b615a0a889
+    type: press
+  - device_id: 732c8fbe891357a451717ae9d34e5224
+    domain: button
+    entity_id: 6a4ad1ae5b618386ba38dae2f50126aa
+    type: press
+  - type: turn_on
+    device_id: 1a8ffbbc2bf9dde26155591848160379
+    entity_id: a9802f7d2a1aca082c830cc8ea05e6f2
+    domain: light
+  - type: turn_on
+    device_id: 732c8fbe891357a451717ae9d34e5224
+    entity_id: c508658726d2916877c37ec67c3915e5
+    domain: light
+  mode: single
+- id: '1736314418259'
+  alias: 'Notification: Bedtime Doors are Unlocked or Open'
+  description: When bedside lamps turn off, check for unsecured doors and sends a
+    notification linking to the camera view.
+  triggers:
+  - entity_id: light.bedside_lamps
+    to: 'off'
+    trigger: state
+  conditions:
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: lock.garage_side_door_lock
+      state: unlocked
+    - condition: state
+      entity_id: lock.laundry_door_lock
+      state: unlocked
+    - condition: state
+      entity_id: cover.ratgdov25i_4affeb_door
+      state: open
+  actions:
+  - data:
+      message: 'Warning: At least one of your doors or the garage is still open or
+        unlocked.'
+      data:
+        clickAction: /lovelace-cameras/default_view
+    action: notify.notify
+- id: '1750585089841'
+  alias: Automation:Morning Open Office Blinds
+  description: ''
+  triggers:
+  - at: 08:30:00
+    trigger: time
+  conditions: []
+  actions:
+  - device_id: 778bf0f3aa79114e689d881c36757f28
+    domain: cover
+    entity_id: b63e15b91ca16fe571a469a2b1315989
+    type: open
+  - device_id: e7763a13c745a280169613ae491c44a5
+    domain: cover
+    entity_id: 143c0895ebe9b0722dfd156b7f76f5ed
+    type: open
+  mode: single
+- id: '1750586348721'
+  alias: 'Automation: Bathroom Heat Lamp Auto Off'
+  description: Turns off the main bathroom heat lamp 20 minutes after it is turned
+    on.
+  triggers:
+  - entity_id: light.mainbathroomdownlights
+    to: 'on'
+    for:
+      minutes: 20
+    trigger: state
+  conditions: []
+  actions:
+  - target:
+      entity_id: light.mainbathroomdownlights
+    action: light.turn_off
+    data: {}
+  mode: single
