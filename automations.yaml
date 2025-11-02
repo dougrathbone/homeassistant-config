@@ -259,6 +259,11 @@
     from: 'off'
     to: 'on'
     trigger: state
+  - trigger: webhook
+    webhook_id: 2n_intercom_door_trigger
+    allowed_methods:
+      - POST
+      - GET
   conditions: []
   actions:
   - choose:
@@ -269,9 +274,13 @@
       sequence:
       - data:
           title: "\U0001F6AA Entry Alert"
-          message: The {{ state_attr(trigger.entity_id, 'friendly_name') }} was {%
-            if 'lock' in trigger.entity_id or 'switch' in trigger.entity_id %}unlocked{%
-            else %}opened{% endif %}.
+          message: "{% if trigger.platform == 'webhook' %}The front door was opened with
+            {% if trigger.query.user is defined and trigger.query.user %}{{ trigger.query.user 
+            }}{% elif trigger.json.user is defined %}{{ trigger.json.user }}{% elif trigger.json.name 
+            is defined %}{{ trigger.json.name }}{% else %}someone{% endif %}'s code{% else %}The 
+            {{ state_attr(trigger.entity_id, 'friendly_name') }} was {% if 'lock' in 
+            trigger.entity_id or 'switch' in trigger.entity_id %}unlocked{% else %}opened{% 
+            endif %}{% endif %}."
           data:
             clickAction: /lovelace-cameras/default_view
         action: notify.mobile_app_rachellesphone
@@ -282,12 +291,29 @@
       sequence:
       - data:
           title: "\U0001F6AA Entry Alert"
-          message: The {{ state_attr(trigger.entity_id, 'friendly_name') }} was {%
-            if 'lock' in trigger.entity_id or 'switch' in trigger.entity_id %}unlocked{%
-            else %}opened{% endif %}.
+          message: "{% if trigger.platform == 'webhook' %}The front door was opened with
+            {% if trigger.query.user is defined and trigger.query.user %}{{ trigger.query.user 
+            }}{% elif trigger.json.user is defined %}{{ trigger.json.user }}{% elif trigger.json.name 
+            is defined %}{{ trigger.json.name }}{% else %}someone{% endif %}'s code{% else %}The 
+            {{ state_attr(trigger.entity_id, 'friendly_name') }} was {% if 'lock' in 
+            trigger.entity_id or 'switch' in trigger.entity_id %}unlocked{% else %}opened{% 
+            endif %}{% endif %}."
           data:
             clickAction: /lovelace-cameras/default_view
         action: notify.mobile_app_dougs_phone
+    default:
+    - data:
+        title: "\U0001F6AA Entry Alert"
+        message: "{% if trigger.platform == 'webhook' %}The front door was opened with
+          {% if trigger.query.user is defined and trigger.query.user %}{{ trigger.query.user 
+          }}{% elif trigger.json.user is defined %}{{ trigger.json.user }}{% elif trigger.json.name 
+          is defined %}{{ trigger.json.name }}{% else %}someone{% endif %}'s code{% else %}The 
+          {{ state_attr(trigger.entity_id, 'friendly_name') }} was {% if 'lock' in 
+          trigger.entity_id or 'switch' in trigger.entity_id %}unlocked{% else %}opened{% 
+          endif %}{% endif %}."
+        data:
+          clickAction: /lovelace-cameras/default_view
+      action: notify.notify
   mode: restart
 - id: '1673173021056'
   alias: 'Notification: Device Battery Low'
